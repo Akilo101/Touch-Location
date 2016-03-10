@@ -4,42 +4,46 @@
 //
 //  Created by ryan on 3/9/16.
 //  Copyright (c) 2016 Indicane. All rights reserved.
-//
+// The Epic Face will allways go to the players touch, can be used for any touching in the cordinate system
 
 import SpriteKit
 
 class GameScene: SKScene {
+    let face = SKSpriteNode(imageNamed: "epicFace")
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!"
-        myLabel.fontSize = 45
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
-        
-        self.addChild(myLabel)
+        backgroundColor = SKColor.whiteColor()
+        addChild(face)
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-       /* Called when a touch begins */
-        
-        for touch in touches {
-            let location = touch.locationInNode(self)
-            
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
-            sprite.xScale = 0.5
-            sprite.yScale = 0.5
-            sprite.position = location
-            
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-            
-            sprite.runAction(SKAction.repeatActionForever(action))
-            
-            self.addChild(sprite)
-        }
+    
+    
+    func playerTapp(location: CGPoint){  //Detects a tap, only give cordinates once
+        face.position = CGPoint(x: location.x, y: location.y)
     }
-   
-    override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
+    
+    
+    func playerSwipe(location: CGPoint){ //Detects a moving touch, constantly runs with the cordinates
+        face.position = CGPoint(x: location.x, y: location.y)
+    }
+    
+    
+    
+    
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        guard let touch = touches.first else { //Gets the location of a touch as a UITouch
+            return
+        }
+        let touchLocation = touch.locationInNode(self)//Converts UITouch into a CGPoint
+        playerTapp(touchLocation)
+    }
+    
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        guard let touch = touches.first else { //Gets the location of a swipe as a UITouch
+            return
+        }
+        let touchLocation = touch.locationInNode(self)//Converts UITouch into a CGPoint
+        playerSwipe(touchLocation)
     }
 }
